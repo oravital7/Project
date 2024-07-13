@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
         run:
-            working-directory: ./backend  
+            working-directory: ./backend
 
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
             ls -la
 
       - name: Upload artifact for deployment jobs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: python-app
           path: backend/release.zip
@@ -53,27 +53,30 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'production'
+      name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-
+    
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
 
       - name: Verify files after downloading
         run: |
-            cd python-app
+            pwd
             ls -la
 
       - name: Unzip artifact for deployment
         run: unzip python-app/release.zip -d ./
 
+      - name: Verify files after downloading
+        run: |
+            pwd
+            ls -la
+      
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
           app-name: 'flaskte'
-          slot-name: 'production'
- 
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E9B1284A5DBC4D8287EC4BD2A324757E }}
