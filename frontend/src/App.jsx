@@ -14,7 +14,7 @@ const App = () => {
 
     useEffect(() => {
         const fetchCyclistIds = async () => {
-            const response = await fetch('https://flaskte.azurewebsites.net/cyclists');
+            const response = await fetch('http://48.216.214.186:5000/cyclists');
             const data = await response.json();
             setCyclistIds(data);
         };
@@ -25,7 +25,7 @@ const App = () => {
         event.preventDefault();
         if (!selectedCyclists.includes(currentCyclistId)) {
             setSelectedCyclists([...selectedCyclists, currentCyclistId]);
-            const response = await fetch('https://flaskte.azurewebsites.net/predict', {
+            const response = await fetch('http://48.216.214.186:5000/predict', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ cyclist_id: Number(currentCyclistId) }),
@@ -60,7 +60,7 @@ const App = () => {
     const handleCyclistForTableChange = async (event) => {
         const cyclistId = event.target.value;
         setCyclistForTable(cyclistId);
-        const response = await fetch('https://flaskte.azurewebsites.net/predict', {
+        const response = await fetch('http://48.216.214.186:5000/predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ cyclist_id: Number(cyclistId) }),
